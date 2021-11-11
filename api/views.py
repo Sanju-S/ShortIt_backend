@@ -19,12 +19,6 @@ class AllLinkView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-class GetShortLink(APIView):
-    def get(self, req, *args, **kwargs):
-        print(req.body)
-        return Response(status=status.HTTP_200_OK)
-
-
 class GetShortLinkView(APIView):
     def post(self, req, *args, **kwargs):
         try: 
