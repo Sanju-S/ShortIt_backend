@@ -77,3 +77,32 @@ class GetFullLinkView(APIView):
         serializer = LinkSerializer(data)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class GetCustomLinkView(APIView):
+    def post(self, req, *args, **kwargs):
+        try: 
+            content = json.loads(req.body)
+        except:
+            return HttpResponseBadRequest('Please provide proper data')
+
+        if not (content.get('full_link') or content.get('custom_link')):
+            return HttpResponseBadRequest('Please provide full/custom link')
+
+        custom_link = content.get('custom_link')
+
+        links = Links.objects.all()
+
+        for link in links:
+            if link.short_link == custom_link:
+                return Response({'error': 'link already exist'}, status=status.HTTP_403_FORBIDDEN)
+        
+        Links.objects.create(
+            short_link=custom_link,
+            full_link=content.get('full_link')
+        )
+
+        return Response({
+            'short_link': custom_link
+        }, status=status.HTTP_200_OK)
+
